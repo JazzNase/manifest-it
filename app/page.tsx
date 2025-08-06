@@ -20,6 +20,7 @@ import {
 } from "@coinbase/onchainkit/wallet";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { Button, Icon } from "./components/DemoComponents";
+import { Dashboard } from "./components/Dashboard";
 
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
@@ -130,12 +131,7 @@ export default function App() {
         </nav>
 
         <main className="flex-1">
-          {activeTab === "dashboard" && (
-            <div className="text-center p-8">
-              <h2 className="text-2xl font-bold mb-4">🌟 Your Manifestation Dashboard</h2>
-              <p className="text-[var(--app-foreground-muted)]">Coming soon...</p>
-            </div>
-          )}
+          {activeTab === "dashboard" && <Dashboard />}
           {activeTab === "manifestations" && (
             <div className="text-center p-8">
               <h2 className="text-2xl font-bold mb-4">💭 Your Dreams</h2>
