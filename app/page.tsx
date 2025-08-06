@@ -29,12 +29,16 @@ import { ManifestationList } from "./components/ManifestationList";
 import { DailyIntent } from "./components/DailyIntent";
 import { WelcomeExplore } from "./components/WelcomeExplore";
 import { CommunityFeed } from "./components/CommunityFeed";
+import { useManifestationStore } from "./store/manifestationStore";
 
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const [frameAdded, setFrameAdded] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+  
+  // Add manifestation store hooks
+  const { initializeUser, isLoading, user } = useManifestationStore();
 
   const addFrame = useAddFrame();
   const openUrl = useOpenUrl();
@@ -48,6 +52,13 @@ export default function App() {
       setFrameReady();
     }
   }, [setFrameReady, isFrameReady]);
+
+  // Initialize user when wallet connects
+  useEffect(() => {
+    if (isConnected && address && !user) {
+      initializeUser(address);
+    }
+  }, [isConnected, address, initializeUser, user]);
 
   // Auto-switch tabs based on connection status
   useEffect(() => {
@@ -102,6 +113,28 @@ export default function App() {
 
     return null;
   }, [context, frameAdded, handleAddFrame]);
+
+  // Loading state while initializing user
+  if (isLoading && isConnected) {
+    return (
+      <div className="flex flex-col min-h-screen font-sans text-[var(--app-foreground)] mini-app-theme">
+        <div className="w-full max-w-md mx-auto px-4 py-2 flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="text-4xl mb-4 animate-bounce">✨</div>
+            <h3 className="text-lg font-semibold mb-2 text-[var(--app-foreground)]">
+              Initializing Your Journey
+            </h3>
+            <p className="text-[var(--app-foreground-muted)]">
+              Setting up your manifestation space...
+            </p>
+            <div className="mt-4 w-32 mx-auto bg-[var(--app-gray)] rounded-full h-2">
+              <div className="h-2 rounded-full bg-gradient-to-r from-[var(--app-accent)] to-purple-500 animate-pulse" style={{ width: '60%' }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const getNavigation = () => {
     if (!isConnected) {
@@ -218,8 +251,16 @@ export default function App() {
             <Wallet>
               <ConnectWallet>
                 <div className="flex items-center gap-1">
-                  {isConnected ? (
-                    <Name className="text-xs text-[var(--app-foreground-muted)]" />
+                  {isConnected && user ? (
+                    <div className="flex items-center gap-2">
+                      <Name className="text-xs text-[var(--app-foreground-muted)]" />
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[var(--app-accent)] to-purple-500"></div>
+                        <span className="text-xs font-semibold text-[var(--app-accent)]">
+                          {user.energy_level}%
+                        </span>
+                      </div>
+                    </div>
                   ) : (
                     <span className="text-xs text-[var(--app-foreground-muted)]">
                       Connect wallet
@@ -234,6 +275,23 @@ export default function App() {
                   <Address />
                   <EthBalance />
                 </Identity>
+                {user && (
+                  <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                    <div className="text-xs text-gray-500 mb-1">Manifestation Energy</div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                        <div 
+                          className="h-2 rounded-full bg-gradient-to-r from-[var(--app-accent)] to-purple-500"
+                          style={{ width: `${user.energy_level}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-semibold">{user.energy_level}%</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      🏆 {user.completed_count} completed • 🔥 {user.daily_streak} day streak
+                    </div>
+                  </div>
+                )}
                 <WalletDropdownDisconnect />
               </WalletDropdown>
             </Wallet>

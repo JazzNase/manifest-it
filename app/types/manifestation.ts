@@ -2,12 +2,19 @@ export type ManifestationState = 'dream' | 'working' | 'done' | 'archived';
 
 export interface Manifestation {
   id: string;
+  user_id?: string; // Add this for Supabase
   title: string;
   description?: string;
+  emoji?: string;
   state: ManifestationState;
+  is_public?: boolean; // Add this for community features
+  category?: string;
+  tags?: string[];
+  progress?: number;
   createdAt: Date;
   updatedAt: Date;
-  emoji?: string;
+  created_at?: string; // Supabase format
+  updated_at?: string; // Supabase format
 }
 
 export interface DailyStats {

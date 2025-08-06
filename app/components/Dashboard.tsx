@@ -4,8 +4,11 @@ import { useManifestationStore } from '../store/manifestationStore';
 import { Button } from './DemoComponents';
 
 export function Dashboard() {
-  const { energyLevel, getStats } = useManifestationStore();
+  const { user, energyLevel, getStats } = useManifestationStore();
   const stats = getStats();
+
+  // Use user data if available, otherwise fallback to store
+  const currentEnergyLevel = user?.energy_level ?? energyLevel;
 
   const getEnergyEmoji = (level: number) => {
     if (level >= 80) return '🔥';
@@ -23,13 +26,30 @@ export function Dashboard() {
     return 'from-blue-500 to-purple-500';
   };
 
+  const getWelcomeMessage = () => {
+    if (!user) return "🌟 Welcome, Dreamer";
+    
+    const name = user.name || `${user.wallet_address.slice(0, 6)}...${user.wallet_address.slice(-4)}`;
+    return `🌟 Welcome Back, ${name}`;
+  };
+
+  const getSubMessage = () => {
+    if (stats.total === 0) {
+      return "Ready to manifest your first dream?";
+    }
+    if (user?.daily_streak && user.daily_streak > 0) {
+      return `${user.daily_streak} day streak! Keep the momentum going...`;
+    }
+    return "Your manifestation journey continues...";
+  };
+
   return (
     <div className="space-y-4">
       {/* Welcome Message */}
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold mb-2">🌟 Welcome Back, Dreamer</h2>
+        <h2 className="text-2xl font-bold mb-2">{getWelcomeMessage()}</h2>
         <p className="text-[var(--app-foreground-muted)] text-sm">
-          Your manifestation journey continues...
+          {getSubMessage()}
         </p>
       </div>
 
@@ -44,28 +64,47 @@ export function Dashboard() {
         
         <div className="bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-2xl p-4 backdrop-blur-md">
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-500">{stats.done}</div>
+            <div className="text-2xl font-bold text-green-500">{user?.completed_count || stats.done}</div>
             <div className="text-xs text-[var(--app-foreground-muted)]">Manifested</div>
           </div>
         </div>
       </div>
 
+      {/* Streak & Total Stats */}
+      {user && (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-2xl p-4 backdrop-blur-md">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-500">{user.daily_streak}</div>
+              <div className="text-xs text-[var(--app-foreground-muted)]">Day Streak 🔥</div>
+            </div>
+          </div>
+          
+          <div className="bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-2xl p-4 backdrop-blur-md">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-500">{user.total_manifestations}</div>
+              <div className="text-xs text-[var(--app-foreground-muted)]">All Time</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Energy Meter */}
       <div className="bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-2xl p-4 backdrop-blur-md">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium">Energy Level</span>
-          <span className="text-2xl">{getEnergyEmoji(energyLevel)}</span>
+          <span className="text-2xl">{getEnergyEmoji(currentEnergyLevel)}</span>
         </div>
         
         <div className="w-full bg-[var(--app-gray)] rounded-full h-3 mb-2">
           <div 
-            className={`h-3 rounded-full bg-gradient-to-r ${getEnergyColor(energyLevel)} transition-all duration-500`}
-            style={{ width: `${energyLevel}%` }}
+            className={`h-3 rounded-full bg-gradient-to-r ${getEnergyColor(currentEnergyLevel)} transition-all duration-500`}
+            style={{ width: `${currentEnergyLevel}%` }}
           />
         </div>
         
         <div className="text-xs text-[var(--app-foreground-muted)] text-center">
-          {energyLevel}% - Keep manifesting!
+          {currentEnergyLevel}% - {currentEnergyLevel === 50 && stats.total === 0 ? 'Start manifesting to boost your energy!' : 'Keep manifesting!'}
         </div>
       </div>
 
@@ -87,6 +126,16 @@ export function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Daily Intent Section */}
+      {user?.daily_intent && (
+        <div className="bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-2xl p-4 backdrop-blur-md">
+          <h3 className="text-sm font-medium mb-2">Today's Intent</h3>
+          <p className="text-xs text-[var(--app-foreground-muted)] italic">
+            "{user.daily_intent}"
+          </p>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="pt-2">
