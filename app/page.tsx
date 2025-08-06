@@ -21,6 +21,8 @@ import {
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { Button, Icon } from "./components/DemoComponents";
 import { Dashboard } from "./components/Dashboard";
+import { ManifestationList } from "./components/ManifestationList";
+import { DailyIntent } from "./components/DailyIntent";
 
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
@@ -132,18 +134,8 @@ export default function App() {
 
         <main className="flex-1">
           {activeTab === "dashboard" && <Dashboard />}
-          {activeTab === "manifestations" && (
-            <div className="text-center p-8">
-              <h2 className="text-2xl font-bold mb-4">💭 Your Dreams</h2>
-              <p className="text-[var(--app-foreground-muted)]">Create your first manifestation...</p>
-            </div>
-          )}
-          {activeTab === "intent" && (
-            <div className="text-center p-8">
-              <h2 className="text-2xl font-bold mb-4">🌅 Daily Intent</h2>
-              <p className="text-[var(--app-foreground-muted)]">What are you manifesting today?</p>
-            </div>
-          )}
+          {activeTab === "manifestations" && <ManifestationList />}
+          {activeTab === "intent" && <DailyIntent />}
         </main>
 
         <footer className="mt-6 pt-4 flex justify-center">
