@@ -9,6 +9,7 @@ interface ManifestationStore {
   
   // Actions
   addManifestation: (title: string, description?: string, emoji?: string) => void;
+  updateManifestation: (id: string, updates: Partial<Manifestation>) => void;
   updateManifestationState: (id: string, state: ManifestationState) => void;
   deleteManifestation: (id: string) => void;
   setDailyIntent: (intent: string) => void;
@@ -38,11 +39,18 @@ export const useManifestationStore = create<ManifestationStore>()(
               title,
               description,
               emoji: emoji || '✨',
-              state: 'dream',
+              state: 'dream' as ManifestationState,
               createdAt: new Date(),
               updatedAt: new Date(),
             },
           ],
+        })),
+      
+      updateManifestation: (id, updates) =>
+        set((state) => ({
+          manifestations: state.manifestations.map((m) =>
+            m.id === id ? { ...m, ...updates, updatedAt: new Date() } : m
+          ),
         })),
         
       updateManifestationState: (id, newState) =>
@@ -59,7 +67,7 @@ export const useManifestationStore = create<ManifestationStore>()(
         
       setDailyIntent: (intent) => set({ dailyIntent: intent }),
       
-      updateEnergyLevel: (level) => set({ energyLevel: level }),
+      updateEnergyLevel: (level) => set({ energyLevel: Math.max(0, Math.min(100, level)) }),
       
       getStats: () => {
         const manifestations = get().manifestations;
