@@ -249,7 +249,7 @@ export default function App() {
               ✨ Manifest It
             </h1>
             <Wallet>
-              <ConnectWallet>
+              <ConnectWallet text={isConnected ? "Connected Wallet" : "Connect Wallet"}>
                 <div className="flex items-center gap-1">
                   {isConnected && user ? (
                     <div className="flex items-center gap-2">
@@ -263,7 +263,7 @@ export default function App() {
                     </div>
                   ) : (
                     <span className="text-xs text-[var(--app-foreground-muted)]">
-                      Connect wallet
+                      {isConnected ? "Connected wallet" : "Connect wallet"}
                     </span>
                   )}
                 </div>
