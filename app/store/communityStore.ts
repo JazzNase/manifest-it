@@ -59,7 +59,7 @@ interface CommunityStore {
   toggleLike: (manifestationId: string, userAddress: string) => void;
   toggleSupport: (manifestationId: string, userAddress: string) => void;
   addComment: (manifestationId: string, comment: Omit<CommunityComment, 'id' | 'createdAt' | 'likes'>) => void;
-  shareManifestationToCommunity: (manifestation: any, userAddress: string) => void;
+  shareManifestationToCommunity: (manifestation: Partial<CommunityManifestation>, userAddress: string) => void;
   updateCommunityStats: () => void;
 }
 
@@ -207,9 +207,17 @@ export const useCommunityStore = create<CommunityStore>()(
         }));
       },
       
-      shareManifestationToCommunity: (manifestation: any, userAddress: string) => {
+      shareManifestationToCommunity: (manifestation: Partial<CommunityManifestation>, userAddress: string) => {
         const communityManifestation: CommunityManifestation = {
-          ...manifestation,
+          id: manifestation.id || crypto.randomUUID(),
+          title: manifestation.title || '',
+          description: manifestation.description || '',
+          emoji: manifestation.emoji || '✨',
+          state: manifestation.state || 'dream',
+          createdAt: manifestation.createdAt || new Date(),
+          updatedAt: manifestation.updatedAt || new Date(),
+          category: manifestation.category || 'General',
+          progress: manifestation.progress || 0,
           author: {
             name: `User ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`,
             address: userAddress,

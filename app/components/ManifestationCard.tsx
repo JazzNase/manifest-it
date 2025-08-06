@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Manifestation } from '../types/manifestation';
 
 interface ManifestationCardProps {
@@ -17,7 +16,6 @@ interface ManifestationCardProps {
     avatar?: string;
     id: string;
   };
-  isPublic?: boolean;
   showSocialActions?: boolean;
   onStateChange?: (id: string, newState: Manifestation['state']) => void;
   onUpdate?: (id: string, updates: Partial<Manifestation>) => void;
@@ -29,7 +27,6 @@ interface ManifestationCardProps {
 export function ManifestationCard({ 
   manifestation, 
   user, 
-  isPublic = false,
   showSocialActions = false,
   onStateChange,
   onUpdate,

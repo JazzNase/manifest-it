@@ -1,10 +1,10 @@
 'use client';
 
 import { useManifestationStore } from '../store/manifestationStore';
-import { Button, Icon } from './DemoComponents';
+import { Button } from './DemoComponents';
 
 export function Dashboard() {
-  const { manifestations, energyLevel, getStats } = useManifestationStore();
+  const { energyLevel, getStats } = useManifestationStore();
   const stats = getStats();
 
   const getEnergyEmoji = (level: number) => {

@@ -23,7 +23,7 @@ import {
 } from "@coinbase/onchainkit/wallet";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useAccount } from "wagmi";
-import { Button, Icon } from "./components/DemoComponents";
+import { Button } from "./components/DemoComponents";
 import { Dashboard } from "./components/Dashboard";
 import { ManifestationList } from "./components/ManifestationList";
 import { DailyIntent } from "./components/DailyIntent";
@@ -34,7 +34,7 @@ export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const [frameAdded, setFrameAdded] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
 
   const addFrame = useAddFrame();
   const openUrl = useOpenUrl();

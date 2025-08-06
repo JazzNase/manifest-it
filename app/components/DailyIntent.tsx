@@ -44,7 +44,7 @@ export function DailyIntent() {
       "You are the author of your own story.",
       "Trust the process and stay aligned.",
       "Your vibe attracts your tribe.",
-      "Manifest the life you've always dreamed of."
+      "Manifest the life you&apos;ve always dreamed of."
     ];
     return quotes[Math.floor(Math.random() * quotes.length)];
   };
@@ -58,7 +58,7 @@ export function DailyIntent() {
             {getTimeBasedGreeting()}
           </CardTitle>
           <p className="text-sm text-[var(--app-foreground-muted)] italic">
-            "{getMotivationalQuote()}"
+            &ldquo;{getMotivationalQuote()}&rdquo;
           </p>
         </CardHeader>
       </Card>
@@ -67,7 +67,7 @@ export function DailyIntent() {
       <Card className="bg-[var(--app-card-bg)] border-[var(--app-card-border)] backdrop-blur-md">
         <CardHeader>
           <CardTitle className="text-lg text-[var(--app-foreground)] flex items-center gap-2">
-            🎯 Today's Intention
+            🎯 Today&apos;s Intention
             {!isEditing && dailyIntent && (
               <Button 
                 variant="ghost" 
